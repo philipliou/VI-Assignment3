@@ -9,8 +9,9 @@
 #include "bldg.h"
 
 // Constructor
-Bldg::Bldg(cv::Mat map, int bldgNo){
-    Mat copyMap = map;
+Bldg::Bldg(Mat map, int bldgNo){
+    Mat copyMap;
+    map.copyTo(copyMap);
     int area = 0;
     for (int i = 0; i < copyMap.rows; i++) {
         for (int j = 0; j < copyMap.cols; j++) {
@@ -121,7 +122,6 @@ void Bldg::CalcSizeDesc (Mat map) {
     }
     
     int avgSize = sizeCount/27;
-    cout << sizeCount << " " << avgSize << endl;
     
     if (area_ <= (avgSize * 0.5)) {
         sizeDesc_.push_back("SMALL");
@@ -139,11 +139,14 @@ void Bldg::CalcOrientDesc () {
     float height = lowRight_.y - upLeft_.y;
     
     if (width/height < 1/1.3) {
+        orientDesc_.push_back("TALL");
+        
+    } else if (width/height > 1.3) {
         orientDesc_.push_back("WIDE");
-    } else if (width/height > 1.3){
-        shapeDesc_.push_back("TALL");
+        
     } else {
         orientDesc_.push_back("SYMMETRICAL");
+        
     }
 };
 /*

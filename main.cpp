@@ -47,7 +47,7 @@ int main(int argc, const char * argv[])
     
 //    cout << "M = "<< endl << " "  << map_labeled << endl << endl;
 
-    Bldg *testBuilding = new Bldg(map_labeled, 18);
+    Bldg *testBuilding = new Bldg(map_labeled, 10);
     testBuilding->printBldg();
     
     
