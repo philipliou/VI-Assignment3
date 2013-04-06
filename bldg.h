@@ -33,13 +33,23 @@ private:
     vector<string> orientDesc_;        // orientation description
 
 public:
+    /* Constructor */
     Bldg(cv::Mat map, int bldgNo);
+    
+    /* Description and Geometry Calculators */
     void CalcArea (void);            // calculate area: just count black pixels
     void CalcCOM (void);             // calculate center of mass
     void CalcMBR (void);             // calculate minimum bounding rectangle: loop and find the top-left, lower-right black coordinates
     void CalcShapeDesc (void);         // define functions to generate geoDescriptions
     void CalcSizeDesc (Mat map);        // define functions to generate sizeDescriptions
     void CalcOrientDesc (void);
+    
+    /*Spatial Location Functions */
+    bool IsNorthOf(Bldg tgt);
+    bool IsSouthOf(Bldg tgt);
+    bool IsEastOf(Bldg tgt);
+    bool IsWestOf(Bldg tgt);
+    bool IsNear(Bldg tgt);
     
     /* Basic Getter Functions */
     string GetName(void) {
@@ -99,7 +109,6 @@ public:
         cout << "orientDesc: " << GetOrientDesc() << endl;
     };
 };
-
 
 // If using namespace, then don't need to do namespace::
 // Define short functions like getters and setters in .h file too. 

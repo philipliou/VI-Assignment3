@@ -149,6 +149,54 @@ void Bldg::CalcOrientDesc () {
         
     }
 };
+
+/* Calculate if this_building is North of target_building */
+bool Bldg::IsNorthOf (Bldg tgt) {
+    // y-coordinate of tgt is less than y-coordinate of src: true
+    if (tgt.GetCenter().y < GetCenter().y) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool Bldg::IsSouthOf (Bldg tgt) {
+    // y-coordinate of tgt is greater than y-coordinate of src: true
+    if (tgt.GetCenter().y > GetCenter().y) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool Bldg::IsEastOf (Bldg tgt) {
+    // x-coordinate of tgt is greater than x-coordinate of src: true
+    if (tgt.GetCenter().x > GetCenter().x) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool Bldg::IsWestOf (Bldg tgt) {
+    // x-coordinate of tgt is less than x-coordinate of src: true
+    if (tgt.GetCenter().x < GetCenter().x) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool Bldg::IsNear (Bldg tgt) {
+    // tgt building overlaps the expanded minimum-bounding rectangle of src: true
+    int expand_distance = 34;
+//    for (int i = GetUpLeft().; i < i + 34; i++) {
+//        for (int j = 0; j < j + 34; j++) {
+//            
+//        }
+//    }
+};
+
 /*
 // 
 void doShitToBuilding (Bldg *b, int *x) {

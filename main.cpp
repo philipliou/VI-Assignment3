@@ -7,6 +7,7 @@
 //
 
 #include "bldg.h"
+#include "utility.h"
 #include <fstream>
 #include <stdint.h>
 using namespace std;
@@ -37,13 +38,18 @@ int main(int argc, const char * argv[])
         BldgList.at(i).SetName(line);
         i++;
     }
-
   
     BldgList.at(0).printBldg();
-
+    BldgList.at(1).printBldg();
+    BldgList.at(26).printBldg();
     
-
+    Bldg bldg1 = BldgList.at(0);
+    Bldg bldg2 = BldgList.at(1);
+    Bldg bldg27 = BldgList.at(26);
     
+    cout << bldg1.IsNorthOf(bldg2) << bldg1.IsSouthOf(bldg2) << bldg1.IsEastOf(bldg2) << bldg1.IsWestOf(bldg2) << endl;
+    
+    cout << map.cols/8 << endl;
 //
 //    Bldg *testBuilding = new Bldg(map_labeled, 10);
 //    testBuilding->printBldg();
