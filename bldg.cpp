@@ -14,21 +14,25 @@ Bldg::Bldg(cv::Mat map, int bldgNo){
     int area = 0;
     for (int i = 0; i < copyMap.rows; i++) {
         for (int j = 0; j < copyMap.cols; j++) {
-            cout << (int)copyMap.at<bool>(i,j) << endl;
-            if ((int)copyMap.at<bool>(i,j) != bldgNo_) {
-                copyMap.at<bool>(i,j) = false;
+//            cout << (int)copyMap.at<bool>(i,j) << endl;
+            if ((int)copyMap.at<bool>(i,j) != bldgNo) {
+                copyMap.at<bool>(i,j) = 0;
             } else {
-                copyMap.at<bool>(i,j) = true;
+                copyMap.at<bool>(i,j) = 1;
                 area++;
             }
         }
     }
     
-    area_ = area;
-    soloMap_ = copyMap;
+    name_ = "Default Name";
     bldgNo_ = bldgNo;
-    
-    cout << "Area: " << area_ << endl;
+    soloMap_ = copyMap;
+    CalcCOM();
+    area_ = area;
+    CalcMBR();
+    CalcShapeDesc();
+    CalcSizeDesc(map);
+    CalcOrientDesc();
 };
 
 // Calculate Area by counting black pixels
@@ -52,15 +56,15 @@ void Bldg::CalcCOM () {
 
     for (int i = 0; i < soloMap_.rows; i++) {
         for (int j = 0; j < soloMap_.cols; j++) {
-            if (soloMap_.at<int>(i,j) == bldgNo_) {
-                sumX += i;
-                sumY += j;
+            if (soloMap_.at<bool>(i,j) == 1) {
+                sumX += j;
+                sumY += i;
                 area++;
             }
         }
     }
-    int centerX = sumX / area;
-    int centerY = sumY / area;
+    int centerX = sumX/area;
+    int centerY = sumY/area;
     center_ = cv::Point_<int> (centerX, centerY);
 };
 
@@ -74,7 +78,7 @@ void Bldg::CalcMBR () {
     
     for (int i = 0; i < soloMap_.rows; i++) {
         for (int j = 0; j < soloMap_.cols; j++) {
-            if (soloMap_.at<int>(i,j) == 1) {
+            if (soloMap_.at<bool>(i,j) == 1) {
                 minX = min(minX, j);
                 minY = min(minY, i);
                 maxX = max(maxX, j);
@@ -92,12 +96,12 @@ void Bldg::CalcMBR () {
 // Vocablary: "SQUARE", "RECTANGLE"
 void Bldg::CalcShapeDesc () {
     float width = lowRight_.x - upLeft_.x;
-    float height = upLeft_.y - lowRight_.y;
+    float height = lowRight_.y - upLeft_.y;
     
     if (width/height < 1/1.3 || width/height > 1.3) {
-        shapeDesc_[0] = "RECTANGLE";
+        shapeDesc_.push_back("RECTANGLE");
     } else {
-        shapeDesc_[0] = "SQUARE";
+        shapeDesc_.push_back("SQUARE");
     }
     
 };
@@ -110,24 +114,38 @@ void Bldg::CalcSizeDesc (Mat map) {
     int sizeCount = 0;
     for (int i = 0; i < map.rows; i++) {
         for (int j = 0; j < map.cols; j++) {
-            if (map.at<int>(i,j) != 0) {
+            if ((int)map.at<bool>(i,j) != 0 ) {
                 sizeCount++;
             }
         }
-        int avgSize = sizeCount / 27;
-        
-        vector<string>::iterator it;
-        it = shapeDesc_.begin();
-        if (area_ < (avgSize * 0.5)) {
-            sizeDesc_.insert(it, "SMALL");
-        } else if (area_ > (avgSize * 0.5)) {
-            sizeDesc_.insert(it, "LARGE");
-        } else {
-            sizeDesc_.insert(it, "MEDIUM");
-        }
+    }
+    
+    int avgSize = sizeCount/27;
+    cout << sizeCount << " " << avgSize << endl;
+    
+    if (area_ <= (avgSize * 0.5)) {
+        sizeDesc_.push_back("SMALL");
+    } else if (area_ >= (avgSize * 1.5)) {
+        sizeDesc_.push_back("LARGE");
+    } else {
+        sizeDesc_.push_back("MEDIUM");
     }
 };
 
+// Calculate orientDesc_
+// "TALL", "HORIZONTAL", "SYMMETRICAL"
+void Bldg::CalcOrientDesc () {
+    float width = lowRight_.x - upLeft_.x;
+    float height = lowRight_.y - upLeft_.y;
+    
+    if (width/height < 1/1.3) {
+        orientDesc_.push_back("WIDE");
+    } else if (width/height > 1.3){
+        shapeDesc_.push_back("TALL");
+    } else {
+        orientDesc_.push_back("SYMMETRICAL");
+    }
+};
 /*
 // 
 void doShitToBuilding (Bldg *b, int *x) {

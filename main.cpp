@@ -21,16 +21,23 @@ int main(int argc, const char * argv[])
     cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0        );
     vector<int> areaCounter(28);
     
-    for (int i = 0; i < map_labeled.rows; i++) {
-        for (int j = 0; j < map_labeled.cols; j++) {
-            std::cout << (int)map_labeled.at<bool>(i,j) << std::endl;
-            areaCounter[(int)map_labeled.at<bool>(i,j)]++;
-        }
-    }
+//    for (int i = 0; i < map_labeled.rows; i++) {
+//        for (int j = 0; j < map_labeled.cols; j++) {
+//            std::cout << (int)map_labeled.at<bool>(i,j) << std::endl;
+//            areaCounter[(int)map_labeled.at<bool>(i,j)]++;
+//        }
+//    }
     
-    for(std::vector<int>::size_type i = 0; i != areaCounter.size(); i++) {
-        std::cout << "Building #" << i << " " << areaCounter[i] << endl;
-    }
+//    for(std::vector<int>::size_type i = 0; i != areaCounter.size(); i++) {
+//        std::cout << "Building #" << i << " " << areaCounter[i] << endl;
+//    }
+    
+//  Create vector of buildings (including zeroes) and initialize all of them
+//    vector<Bldg> BldgList;
+//    for (int i = 0; i < 27; i++) {
+//        Bldg *tempBldg = new Bldg(map_labeled, i+1);
+//        BldgList[i] = *tempBldg;
+//    }
     
 //    for (int i = 0; i < map.rows; i++) {
 //        for (int j = 0; j < map.cols; j++) {
@@ -40,9 +47,9 @@ int main(int argc, const char * argv[])
     
 //    cout << "M = "<< endl << " "  << map_labeled << endl << endl;
 
-//    Bldg *testBuilding = new Bldg(map_labeled, 1);
-//    testBuilding->CalcArea();
-//    cout << testBuilding->GetBldgno() << endl;
+    Bldg *testBuilding = new Bldg(map_labeled, 18);
+    testBuilding->printBldg();
+    
     
     // Convention
 //    Bldg *testBuilding = new Bldg(map_labeled, 27);

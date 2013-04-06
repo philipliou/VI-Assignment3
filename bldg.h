@@ -39,7 +39,9 @@ public:
     void CalcMBR (void);             // calculate minimum bounding rectangle: loop and find the top-left, lower-right black coordinates
     void CalcShapeDesc (void);         // define functions to generate geoDescriptions
     void CalcSizeDesc (Mat map);        // define functions to generate sizeDescriptions
-
+    void CalcOrientDesc (void);
+    
+    /* Basic Getter Functions */
     string GetName(void) {
         return name_;
     };
@@ -67,29 +69,28 @@ public:
         return lowRight_;
     };
     
-    vector<string> getShapeDesc() {
-        return shapeDesc_;
+    string GetShapeDesc() {
+        return shapeDesc_.at(0);
     };
     
-    vector<string> getSizeDesc() {
-        return sizeDesc_;
+    string GetSizeDesc() {
+        return sizeDesc_.at(0);
     };
     
-    void printBldg(void) {
-        cout << "Name: " << GetName() << endl;                            // name
-        cout << "bldgNo: " << GetBldgno() << endl;                                 // building number
-        
-        /*
-         Mat soloMap;                            // map of the building
-         cv::Point center;                           // center of mass
-         int area;                                   // area
-         cv::Point upLeft;                           // MBR (upper-left coordinate)
-         cv::Point lowRight;                         // MBR (lower-right coordinate)
-         std::vector<std::string> geoDesc;           // geometric description
-         std::vector<std::string> sizeDesc;          // size description
-         std::vector<std::string> orientDesc;        // orientation description
-         std::vector<std::string> extremaDesc;       // extrema description
-         */
+    string GetOrientDesc() {
+        return orientDesc_.at(0);
+    }
+    
+    void printBldg() {
+        cout << "Name: " << GetName() << endl;
+        cout << "bldgNo: " << GetBldgno() << endl;
+        cout << "Center: " << GetCenter() << endl;
+        cout << "Area: " << GetArea() << endl;
+        cout << "upLeft: " << GetUpLeft() << endl;
+        cout << "lowRight: " << GetLowRight() << endl;
+        cout << "shapeDesc_: " << GetShapeDesc() << endl;
+        cout << "sizeDesc: " << GetSizeDesc() << endl;
+        cout << "orientDesc: " << GetOrientDesc() << endl;
     };
 };
 
