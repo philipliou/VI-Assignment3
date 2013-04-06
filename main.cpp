@@ -7,6 +7,7 @@
 //
 
 #include "bldg.h"
+#include <fstream>
 #include <stdint.h>
 using namespace std;
 using namespace cv;
@@ -14,12 +15,8 @@ using namespace cv;
 int main(int argc, const char * argv[])
 {
     cv::Mat map = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm");
- 
-    FILE * labelFile;
-    labelFile = fopen ("ass3-table.txt" , "r");
-
     cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0        );
-    vector<int> areaCounter(28);
+    ifstream labels ("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-table-changed.txt", ifstream::in);
     
 //    for (int i = 0; i < map_labeled.rows; i++) {
 //        for (int j = 0; j < map_labeled.cols; j++) {
@@ -27,28 +24,29 @@ int main(int argc, const char * argv[])
 //            areaCounter[(int)map_labeled.at<bool>(i,j)]++;
 //        }
 //    }
-    
-//    for(std::vector<int>::size_type i = 0; i != areaCounter.size(); i++) {
-//        std::cout << "Building #" << i << " " << areaCounter[i] << endl;
-//    }
+//    cout << "M = "<< endl << " "  << map_labeled << endl << endl;
     
 //  Create vector of buildings (including zeroes) and initialize all of them
-//    vector<Bldg> BldgList;
-//    for (int i = 0; i < 27; i++) {
-//        Bldg *tempBldg = new Bldg(map_labeled, i+1);
-//        BldgList[i] = *tempBldg;
-//    }
-    
-//    for (int i = 0; i < map.rows; i++) {
-//        for (int j = 0; j < map.cols; j++) {
-//            std::cout << (int)map.at<bool>(i,j) << std::endl;
-//        }
-//    }
-    
-//    cout << "M = "<< endl << " "  << map_labeled << endl << endl;
+    vector<Bldg> BldgList;
+    for (int i = 0; i < 27; i++) {
+        BldgList.push_back(*new Bldg(map_labeled, i+1));
+    }
+    std::string line;
+    int i = 0;
+    while(std::getline(labels, line)) {
+        BldgList.at(i).SetName(line);
+        i++;
+    }
 
-    Bldg *testBuilding = new Bldg(map_labeled, 10);
-    testBuilding->printBldg();
+  
+    BldgList.at(0).printBldg();
+
+    
+
+    
+//
+//    Bldg *testBuilding = new Bldg(map_labeled, 10);
+//    testBuilding->printBldg();
     
     
     // Convention

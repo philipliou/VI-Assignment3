@@ -79,8 +79,14 @@ public:
     
     string GetOrientDesc() {
         return orientDesc_.at(0);
-    }
+    };
     
+    /* Setter Function */
+    void SetName(string n) {
+        name_ = n;
+    };
+    
+    /* Print Function */
     void printBldg() {
         cout << "Name: " << GetName() << endl;
         cout << "bldgNo: " << GetBldgno() << endl;
