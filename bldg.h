@@ -31,18 +31,20 @@ private:
     vector<string> shapeDesc_;           // geometric description
     vector<string> sizeDesc_;          // size description
     vector<string> orientDesc_;        // orientation description
+    bool spaceRel[27][5];
 
 public:
     /* Constructor */
     Bldg(cv::Mat map, int bldgNo);
     
     /* Description and Geometry Calculators */
-    void CalcArea (void);            // calculate area: just count black pixels
-    void CalcCOM (void);             // calculate center of mass
-    void CalcMBR (void);             // calculate minimum bounding rectangle: loop and find the top-left, lower-right black coordinates
-    void CalcShapeDesc (void);         // define functions to generate geoDescriptions
-    void CalcSizeDesc (Mat map);        // define functions to generate sizeDescriptions
+    void CalcArea (void);
+    void CalcCOM (void);
+    void CalcMBR (void);
+    void CalcShapeDesc (void);
+    void CalcSizeDesc (Mat map);
     void CalcOrientDesc (void);
+    void CalcSpaceRel();
     
     /*Spatial Location Functions */
     bool IsNorthOf(Bldg tgt);

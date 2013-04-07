@@ -10,24 +10,23 @@
 
 // Constructor
 Bldg::Bldg(Mat map, int bldgNo){
-    Mat copyMap;
-    map.copyTo(copyMap);
+    Mat copyMap = map.clone();
     int area = 0;
     for (int i = 0; i < copyMap.rows; i++) {
         for (int j = 0; j < copyMap.cols; j++) {
-//            cout << (int)copyMap.at<bool>(i,j) << endl;
             if ((int)copyMap.at<bool>(i,j) != bldgNo) {
                 copyMap.at<bool>(i,j) = 0;
             } else {
-                copyMap.at<bool>(i,j) = 1;
                 area++;
             }
+//            cout << (int)copyMap.at<bool>(i,j) << " ";
         }
+//        cout << endl;
     }
     
     name_ = "Default Name";
     bldgNo_ = bldgNo;
-    soloMap_ = copyMap;
+    soloMap_ = copyMap.clone();
     CalcCOM();
     area_ = area;
     CalcMBR();
@@ -54,16 +53,21 @@ void Bldg::CalcCOM () {
     int sumX = 0;
     int sumY = 0;
     int area = 0;
+    int bldgNum = bldgNo_;
+    Mat map = GetMap();
 
     for (int i = 0; i < soloMap_.rows; i++) {
         for (int j = 0; j < soloMap_.cols; j++) {
-            if (soloMap_.at<bool>(i,j) == 1) {
+//            cout << (int)soloMap_.at<bool>(i,j) << " " ;
+            if ((int)map.at<bool>(i,j) == bldgNum) {
                 sumX += j;
                 sumY += i;
                 area++;
             }
         }
     }
+    
+//    cout << area << endl;
     int centerX = sumX/area;
     int centerY = sumY/area;
     center_ = cv::Point_<int> (centerX, centerY);
@@ -76,10 +80,12 @@ void Bldg::CalcMBR () {
     int minY = soloMap_.rows;
     int maxX = 0;
     int maxY = 0;
+    int bldgNum = bldgNo_;
+    Mat map = GetMap();    
     
-    for (int i = 0; i < soloMap_.rows; i++) {
-        for (int j = 0; j < soloMap_.cols; j++) {
-            if (soloMap_.at<bool>(i,j) == 1) {
+    for (int i = 0; i < map.rows; i++) {
+        for (int j = 0; j < map.cols; j++) {
+            if ((int)map.at<bool>(i,j) == bldgNum) {
                 minX = min(minX, j);
                 minY = min(minY, i);
                 maxX = max(maxX, j);
@@ -87,6 +93,9 @@ void Bldg::CalcMBR () {
             }
         }
     }
+    
+    cout << "Rows: " << map.rows << endl;
+    cout << "Columns: " << map.cols << endl;
     
     upLeft_ = Point(minX, minY);
     lowRight_ = Point(maxX, maxY);
@@ -190,11 +199,47 @@ bool Bldg::IsWestOf (Bldg tgt) {
 bool Bldg::IsNear (Bldg tgt) {
     // tgt building overlaps the expanded minimum-bounding rectangle of src: true
     int expand_distance = 34;
-//    for (int i = GetUpLeft().; i < i + 34; i++) {
-//        for (int j = 0; j < j + 34; j++) {
-//            
-//        }
-//    }
+    int x_start = 0;
+    int x_end = soloMap_.cols;
+    int y_start = 0;
+    int y_end = soloMap_.rows;
+    
+    // Set expanded bounding rectangle; checking for boundary conditions.
+    if (upLeft_.x > expand_distance) {
+        x_start = upLeft_.x - expand_distance;
+    }
+    
+    if (lowRight_.x + expand_distance < soloMap_.cols) {
+        x_end = lowRight_.x + expand_distance;
+    }
+    
+    if (upLeft_.y > expand_distance) {
+        y_start = upLeft_.y - expand_distance;
+    }
+    
+    if (lowRight_.y + expand_distance < soloMap_.rows) {
+        y_end = lowRight_.y + expand_distance;
+    }
+    
+    cout << "x_start: " << x_start;
+    cout << " x_end: " << x_end;
+    cout << " y_start: " << y_start;
+    cout << " y_end: " << y_end << endl;
+    
+    Mat tempMap = tgt.GetMap();
+    int tgtNum = tgt.GetBldgno();
+    
+//    cout << "START THE EXTENDED BOUNDING RECTANGLE HERE" << endl;
+    for (int i = y_start; i < y_end; i++) {
+        for (int j = x_start ; j < x_end; j++) {
+//            cout << (int)tempMap.at<bool>(i,j) << " ";
+            if ((int)tempMap.at<bool>(i,j) == tgtNum) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 };
 
 /*
