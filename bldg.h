@@ -109,6 +109,7 @@ public:
         cout << "shapeDesc_: " << GetShapeDesc() << endl;
         cout << "sizeDesc: " << GetSizeDesc() << endl;
         cout << "orientDesc: " << GetOrientDesc() << endl;
+        cout << endl;
     };
 };
 
