@@ -94,9 +94,6 @@ void Bldg::CalcMBR () {
         }
     }
     
-    cout << "Rows: " << map.rows << endl;
-    cout << "Columns: " << map.cols << endl;
-    
     upLeft_ = Point(minX, minY);
     lowRight_ = Point(maxX, maxY);
     
@@ -161,8 +158,8 @@ void Bldg::CalcOrientDesc () {
 
 /* Calculate if this_building is North of target_building */
 bool Bldg::IsNorthOf (Bldg tgt) {
-    // y-coordinate of tgt is less than y-coordinate of src: true
-    if (tgt.GetCenter().y < GetCenter().y) {
+    // y-coordinate of tgt is greater than y-coordinate of src: true
+    if (tgt.GetCenter().y > GetCenter().y) {
         return true;
     } else {
         return false;
@@ -170,8 +167,8 @@ bool Bldg::IsNorthOf (Bldg tgt) {
 };
 
 bool Bldg::IsSouthOf (Bldg tgt) {
-    // y-coordinate of tgt is greater than y-coordinate of src: true
-    if (tgt.GetCenter().y > GetCenter().y) {
+    // y-coordinate of tgt is less than y-coordinate of src: true
+    if (tgt.GetCenter().y < GetCenter().y) {
         return true;
     } else {
         return false;
@@ -221,10 +218,10 @@ bool Bldg::IsNear (Bldg tgt) {
         y_end = lowRight_.y + expand_distance;
     }
     
-    cout << "x_start: " << x_start;
-    cout << " x_end: " << x_end;
-    cout << " y_start: " << y_start;
-    cout << " y_end: " << y_end << endl;
+//    cout << "x_start: " << x_start;
+//    cout << " x_end: " << x_end;
+//    cout << " y_start: " << y_start;
+//    cout << " y_end: " << y_end << endl;
     
     Mat tempMap = tgt.GetMap();
     int tgtNum = tgt.GetBldgno();
