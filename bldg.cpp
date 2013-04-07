@@ -33,6 +33,7 @@ Bldg::Bldg(Mat map, int bldgNo){
     CalcShapeDesc();
     CalcSizeDesc(map);
     CalcOrientDesc();
+    spaceRel_ = vector<bool>(27*5);
 };
 
 // Calculate Area by counting black pixels
@@ -238,6 +239,43 @@ bool Bldg::IsNear (Bldg tgt) {
 
     return false;
 };
+
+void Bldg::CalcSpaceRel(vector<Bldg> bldgList) {
+
+    for (int i = 0; i < 27; i++) {
+        spaceRel_.at(i*5+0) = IsNorthOf(bldgList.at(i));
+        spaceRel_.at(i*5+1) = IsSouthOf(bldgList.at(i));
+        spaceRel_.at(i*5+2) = IsEastOf(bldgList.at(i));
+        spaceRel_.at(i*5+3) = IsWestOf(bldgList.at(i));
+        spaceRel_.at(i*5+4) = IsNear(bldgList.at(i));
+    }
+
+};
+
+void Bldg::printSpaceRel() {
+
+    cout << "Building #" << GetBldgno() << " Space Relation Matrix" << endl;
+    
+    for (int i = 0; i < 27; i++) {
+        if (GetSpaceRel().at(i*5+0)) {
+            cout << "North ";
+        }
+        if (GetSpaceRel().at(i*5+1)) {
+            cout << "South ";
+        }
+        if (GetSpaceRel().at(i*5+2)) {
+            cout << "East ";
+        }
+        if (GetSpaceRel().at(i*5+3)) {
+            cout << "West ";
+        }
+        if (GetSpaceRel().at(i*5+4)) {
+            cout << "Near ";
+        }
+        cout << "of Building #" << i+1 << endl;
+    }
+
+}
 
 /*
 // 

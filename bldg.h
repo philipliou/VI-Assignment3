@@ -31,7 +31,8 @@ private:
     vector<string> shapeDesc_;           // geometric description
     vector<string> sizeDesc_;          // size description
     vector<string> orientDesc_;        // orientation description
-    bool spaceRel[27][5];
+    // bool spaceRel[27][5];
+    vector<bool> spaceRel_;
 
 public:
     /* Constructor */
@@ -44,7 +45,7 @@ public:
     void CalcShapeDesc (void);
     void CalcSizeDesc (Mat map);
     void CalcOrientDesc (void);
-    void CalcSpaceRel();
+    void CalcSpaceRel(vector<Bldg> bldgList);
     
     /*Spatial Location Functions */
     bool IsNorthOf(Bldg tgt);
@@ -92,6 +93,10 @@ public:
     string GetOrientDesc() {
         return orientDesc_.at(0);
     };
+
+    vector<bool> GetSpaceRel() {
+        return spaceRel_;
+    }
     
     /* Setter Function */
     void SetName(string n) {
@@ -111,6 +116,8 @@ public:
         cout << "orientDesc: " << GetOrientDesc() << endl;
         cout << endl;
     };
+
+    void printSpaceRel();
 };
 
 // If using namespace, then don't need to do namespace::
