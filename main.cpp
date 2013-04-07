@@ -18,9 +18,7 @@ int main(int argc, const char * argv[])
     cv::Mat map = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm");
     cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0        );
     ifstream labels ("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-table-changed.txt", ifstream::in);
-    
-//    cout << "M = "<< endl << " "  << map_labeled << endl << endl;
-    
+        
 //  Create vector of buildings (including zeroes) and initialize all of them
     vector<Bldg> BldgList;
     for (int i = 0; i < 27; i++) {
@@ -40,11 +38,18 @@ int main(int argc, const char * argv[])
     Bldg bldg10 = BldgList.at(9);
     Bldg bldg12 = BldgList.at(11);
     Bldg bldg13 = BldgList.at(12);
-    Bldg bldg27 = BldgList.at(26);
+    Bldg bldg18 = BldgList.at(17);
+    Bldg bldg23 = BldgList.at(22);
+        
+    cout << bldg1.IsNorthOf(bldg2) << bldg1.IsSouthOf(bldg2) << bldg1.IsEastOf(bldg2) << bldg1.IsWestOf(bldg2) << endl;
+    cout << bldg1.IsNorthOf(bldg23) << bldg1.IsSouthOf(bldg23) << bldg1.IsEastOf(bldg23) << bldg1.IsWestOf(bldg23) << endl;
+    cout << bldg12.IsNorthOf(bldg18) << bldg12.IsSouthOf(bldg18) << bldg12.IsEastOf(bldg18) << bldg12.IsWestOf(bldg18) << endl;
+    bldg12.printBldg();
+    bldg18.printBldg();
     
-//    Mat tempMap = bldg2.GetMap();
+/* Code that might be useful */
+//   cout << "M = "<< endl << " "  << map_labeled << endl << endl;
     
-//    int counter = 0;
 //    for (int i = 0; i < tempMap.cols; i++) {
 //        for (int j = 0; j < tempMap.rows; j++) {
 //            cout << "(" << i << ", " << j << ")" << endl; 
@@ -53,36 +58,23 @@ int main(int argc, const char * argv[])
 //            }
 //        }
 //    }
-    
-//    cout << "Counted area: " << counter << endl;
+//    bldg2.printBldg();
+//    bldg3.printBldg();
+// cout << bldg1.IsNear(bldg2) << " should be 1." << endl;
+// cout << bldg2.IsNear(bldg2) << " should be 1." << endl;
+// cout << bldg12.IsNear(bldg27) << " should be 0." << endl;
+// cout << bldg9.IsNear(bldg13) << " should be 1." << endl;
+// cout << bldg13.IsNear(bldg10) << " should be 1." << endl;
+// cout << bldg9.IsNear(bldg27) << " should be 0." << endl;
+// cout << bldg12.IsNear(bldg13) << " should be 1." << endl;
+// cout << bldg13.IsNear(bldg12) << " should be 1." << endl;
 
     
 //    cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
 //    cv::imshow("Original Map", map_labeled);
 //    cv::waitKey();
-    
-    
-//    cout << bldg1.IsNorthOf(bldg2) << bldg1.IsSouthOf(bldg2) << bldg1.IsEastOf(bldg2) << bldg1.IsWestOf(bldg2) << endl;
-//    bldg2.printBldg();
-//    bldg3.printBldg();
-    
-    cout << bldg1.IsNear(bldg2) << " should be 1." << endl;
-    cout << bldg2.IsNear(bldg2) << " should be 1." << endl;
-    cout << bldg12.IsNear(bldg27) << " should be 0." << endl;
-    cout << bldg9.IsNear(bldg13) << " should be 1." << endl;
-    cout << bldg13.IsNear(bldg10) << " should be 1." << endl;
-    cout << bldg9.IsNear(bldg27) << " should be 0." << endl;
-    cout << bldg12.IsNear(bldg13) << " should be 1." << endl;
-    cout << bldg13.IsNear(bldg12) << " should be 1." << endl;
-    
-    bldg12.printBldg();
-    bldg13.printBldg();
-//
-//    Bldg *testBuilding = new Bldg(map_labeled, 10);
-//    testBuilding->printBldg();
-    
-    
-    // Convention
+ 
+// Convention
 //    Bldg *testBuilding = new Bldg(map_labeled, 27);
 //    testBuilding->calcArea(a, b, c);
 
