@@ -15,6 +15,8 @@ using namespace cv;
 
 int main(int argc, const char * argv[])
 {
+    cv::Mat map = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
+
     vector<Bldg> BldgList;
     BldgList = InitializeMap();
     
@@ -22,6 +24,11 @@ int main(int argc, const char * argv[])
     BldgList.at(0).CalcSpaceRel(BldgList);
     BldgList.at(0).printSpaceRel();
 
+
+   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
+   cv::imshow("Original Map", map);
+   cvSetMouseCallback("Original Map", mouseEvent, &map);
+   cv::waitKey();
     
 /**** Code that might be useful ****/
 //   cout << "M = "<< endl << " "  << map_labeled << endl << endl;
@@ -49,9 +56,9 @@ int main(int argc, const char * argv[])
 //    cout << bldg1.IsNorthOf(bldg23) << bldg1.IsSouthOf(bldg23) << bldg1.IsEastOf(bldg23) << bldg1.IsWestOf(bldg23) << endl;
 //    cout << bldg12.IsNorthOf(bldg18) << bldg12.IsSouthOf(bldg18) << bldg12.IsEastOf(bldg18) << bldg12.IsWestOf(bldg18) << endl;
     
-//    cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
-//    cv::imshow("Original Map", map_labeled);
-//    cv::waitKey();
+//   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
+//   cv::imshow("Original Map", map_labeled);
+//   cv::waitKey();
     
 //    Bldg bldg1 = BldgList.at(0);
 //    Bldg bldg2 = BldgList.at(1);
