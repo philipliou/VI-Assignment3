@@ -16,19 +16,47 @@ using namespace cv;
 int main(int argc, const char * argv[])
 {
     cv::Mat map = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
-
+    cv::Mat map_bw = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 0);
+    
     vector<Bldg> BldgList;
     BldgList = InitializeMap();
     
-    BldgList.at(0).printBldg();
-    BldgList.at(0).CalcSpaceRel(BldgList);
-    BldgList.at(0).printSpaceRel();
+//    BldgList.at(0).printBldg();
+//    BldgList.at(0).CalcSpaceRel(BldgList);
+//    BldgList.at(0).printSpaceRel();
 
+//    vector<bool> CalcEquivClass (Point src, vector<Bldg> *BldgList);
+    
+    Point testPt = cv::Point_<int> (135, 221);
+    
+//    cout << IsNorthOf(testPt, &(BldgList.at(11)));
+//    cout << IsSouthOf(testPt, &(BldgList.at(11)));
+//    cout << IsEastOf(testPt, &(BldgList.at(11)));
+//    cout << IsWestOf(testPt, &(BldgList.at(11)));
+//    cout << IsNear(testPt, &(BldgList.at(11)));
+    
+    
+//    CalcEquivClass(Point_<int> (1, 1), &BldgList);
+//    CalcEquivClass(Point_<int> (135, 221), &BldgList);
+//    CalcEquivClass(Point_<int> (0, 243), &BldgList);
+//    CalcEquivClass(Point_<int> (274, 243), &BldgList);
+//    CalcEquivClass(Point_<int> (140, 1), &BldgList);
+//    CalcEquivClass(Point_<int> (140, 495), &BldgList);
+//    CalcEquivClass(Point_<int> (275, 495), &BldgList);
+//    printPointDesc(Point_<int> (124, 372), &BldgList);
 
-   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
-   cv::imshow("Original Map", map);
-   cvSetMouseCallback("Original Map", mouseEvent, &map);
-   cv::waitKey();
+    CalcEquivClassSet(Point_<int> (1, 1), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (135, 221), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (0, 243), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (274, 243), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (140, 1), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (140, 495), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (275, 495), &BldgList, &map_bw);    
+    
+//   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
+//   cv::imshow("Original Map", map);
+//   cvSetMouseCallback("Original Map", mouseEvent, &map);
+//   cv::waitKey();
     
 /**** Code that might be useful ****/
 //   cout << "M = "<< endl << " "  << map_labeled << endl << endl;
