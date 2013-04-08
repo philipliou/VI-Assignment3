@@ -40,6 +40,24 @@ vector<Bldg> InitializeMap () {
     return BldgList;
 };
 
+void mouseEvent(int evt, int x, int y, int flags, void* param){
+    if(evt==CV_EVENT_LBUTTONDOWN){
+        Mat* map = (Mat*) param;
+        Mat newMap = *map;
+        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
+        for (int start_x = x - 10; start_x < x + 10; start_x++) {
+            for (int start_y = y - 10; start_y < y + 10; start_y++) {
+                newMap.at<Vec3b>(start_y, start_x)[0] = 0;
+                newMap.at<Vec3b>(start_y, start_x)[1] = 255;
+                newMap.at<Vec3b>(start_y, start_x)[2] = 0;
+            }
+        }
+        
+        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
+        cv::imshow("Original Map", newMap);
+    }
+}
+
 
 
 
