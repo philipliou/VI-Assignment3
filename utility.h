@@ -45,7 +45,7 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
     if(evt==CV_EVENT_LBUTTONDOWN){
         Mat* map = (Mat*) param;
         Mat newMap = *map;
-        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
+       cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
         for (int start_x = x - 10; start_x < x + 10; start_x++) {
             for (int start_y = y - 10; start_y < y + 10; start_y++) {
                 newMap.at<Vec3b>(start_y, start_x)[0] = 0;
@@ -54,50 +54,51 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
             }
         }
         
-        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
+//        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
         cv::imshow("Original Map", newMap);
     }
 }
 
 /* Define similar IsNorthOf, IsSouthOf, IsEastOf, IsWestOf, IsNearOf for points. i.e. Point.IsNorthOf(bldg);
 /* Calculate if this_building is North of target_building */
-bool IsNorthOf (Point src, Bldg tgt) {
+bool IsNorthOf (Point src, Bldg *tgt) {
     // y-coordinate of tgt is greater than y-coordinate of src: true
-    if (tgt.GetCenter().y > src.y) {
+    if (tgt->GetCenter().y > src.y) {
         return true;
     } else {
         return false;
     }
+
 };
 
-bool IsSouthOf (Point src, Bldg tgt) {
+bool IsSouthOf (Point src, Bldg *tgt) {
     // y-coordinate of tgt is less than y-coordinate of src: true
-    if (tgt.GetCenter().y < src.y) {
+    if (tgt->GetCenter().y < src.y) {
         return true;
     } else {
         return false;
     }
 };
 
-bool IsEastOf (Point src, Bldg tgt) {
+bool IsEastOf (Point src, Bldg *tgt) {
     // x-coordinate of tgt is greater than x-coordinate of src: true
-    if (tgt.GetCenter().x > src.x) {
+    if (tgt->GetCenter().x > src.x) {
         return true;
     } else {
         return false;
     }
 };
 
-bool IsWestOf (Point src, Bldg tgt) {
+bool IsWestOf (Point src, Bldg *tgt) {
     // x-coordinate of tgt is less than x-coordinate of src: true
-    if (tgt.GetCenter().x < src.x) {
+    if (tgt->GetCenter().x < src.x) {
         return true;
     } else {
         return false;
     }
 };
 
-bool IsNear (Point src, Bldg tgt) {
+bool IsNear (Point src, Bldg *tgt) {
     // tgt building overlaps the expanded minimum-bounding rectangle of src: true
     int expand_distance = 34;
     int x_start = 0;
@@ -127,8 +128,8 @@ bool IsNear (Point src, Bldg tgt) {
 //    cout << " y_start: " << y_start;
 //    cout << " y_end: " << y_end << endl;
     
-    Mat tempMap = tgt.GetMap();
-    int tgtNum = tgt.GetBldgno();
+    Mat tempMap = tgt->GetMap();
+    int tgtNum = tgt->GetBldgno();
     
 //    cout << "START THE EXTENDED BOUNDING RECTANGLE HERE" << endl;
     for (int i = y_start; i < y_end; i++) {
@@ -152,22 +153,104 @@ bool IsNear (Point src, Bldg tgt) {
 // 		[3] = IsEastOf(closest building's number)
 // 		[4] = IsWestOf(closest building's number)
 // 		[5] = IsNear(closest building's number)
+double euclideanDist(Point p, Point q) {
+    Point diff = p - q;
+    return sqrt(diff.x*diff.x + diff.y*diff.y);
+};
 
-vector<bool> CalcEquivClass (Point src, int closeBldg) {
-    
+vector<int> CalcEquivClass (Point src, vector<Bldg> *BldgList) {
+    int closeBldg = 0; 
+    double minDistance = euclideanDist(src, BldgList->at(0).GetCenter());
+    vector<int> equivclass;
+
+    for (int i = 0; i < 27; i++ ) {
+    		// cout << "Euclidean distance: " << euclideanDist(src, BldgList->at(i).GetCenter()) << endl;
+    	if (euclideanDist(src, BldgList->at(i).GetCenter()) < minDistance) {
+    		closeBldg = i;
+    		minDistance = euclideanDist(src, BldgList->at(i).GetCenter());
+    	}
+    }
+
+    // cout << src << " is closest to building # " << closeBldg + 1 << "with distance: " << minDistance << endl;
+
+    equivclass.push_back(closeBldg);
+    equivclass.push_back(IsNorthOf(src, &BldgList->at(closeBldg)));
+	equivclass.push_back(IsSouthOf(src, &BldgList->at(closeBldg)));
+	equivclass.push_back(IsEastOf(src, &BldgList->at(closeBldg)));
+	equivclass.push_back(IsWestOf(src, &BldgList->at(closeBldg)));
+	equivclass.push_back(IsNear(src, &BldgList->at(closeBldg)));
+
+ //   cout << src << " is close to " << closeBldg << " : " ;
+	// for(int i = 1; i < 6; i++) {
+ //   	cout << equivclass.at(i);
+ //   }
+ //   cout << endl;
+
+    return equivclass;
+};
+
+void printPointDesc(Point src, vector<Bldg> *BldgList) {
+   vector<int> holder = CalcEquivClass(src, BldgList);
+   int closeBldg = holder.at(0);
+	
+   cout << src << " is" ;
+
+   if (holder.at(1)) {
+   	cout << " north of (called " << BldgList->at(closeBldg).GetName() << " )";
+   }
+
+   if (holder.at(2)) {
+   	cout << " south of (called " << BldgList->at(closeBldg).GetName() << " )";
+   }
+
+   if (holder.at(3)) {
+   	cout << " east of (called " << BldgList->at(closeBldg).GetName() << " )";
+   }
+
+   if (holder.at(4)) {
+   	cout << " west of (called " << BldgList->at(closeBldg).GetName() << " )";
+   }
+
+   if (holder.at(5)) {
+   	cout << " near of (called " << BldgList->at(closeBldg).GetName() << " )";
+   }
+
+   cout << endl;
+
 };
 
 // Generates a vector<Points> that is the EquivClassSet. 
 // 1. For each black pixel in map. 
 // 		:Generate the EquivClass vector relative to the given building. 
 // 		:Compare that to EquivClass vector of src. If ==, add to result.
-vector<Points> CalcEquivClassSet (Point src, int closeBldg) {
-	vector<bool> srcEquivClass = CalcEquivClass(src, closeBldg);
+
+vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map_bw) {
+	vector<Point> EquivClassSet;
+	vector<int> srcEquivClass = CalcEquivClass(src, BldgList);
+
+	Point_<int> tempPt;
+
+	for (int i = 0; i < map_bw->rows; i++) {
+		for (int j = 0; j < map_bw->cols; j++) {
+			if (map_bw->at<bool>(i,j) == 0) {
+				tempPt = Point_<int> (i,j);
+				vector<int> tempEquivClass = CalcEquivClass(tempPt, BldgList);
+				if (tempEquivClass == srcEquivClass) {
+					EquivClassSet.push_back(tempPt);
+				}
+			}
+		}
+	}
+    
+    cout << "These are the points that are in the EquivClassSet for point: " << src << endl;
+    for(vector<Point>::iterator it = EquivClassSet.begin(); it != EquivClassSet.end(); ++it) {
+        cout << *it << endl;
+    }
+
+	return EquivClassSet;
 };
 
-//  Finally, mouseEvent takes a vector<Points> and changes color on map for each.
-
-
+//  Finally, mouseEvent takes a vector<Points> and changes color on map for each
 
 
 
