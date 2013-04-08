@@ -17,6 +17,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <algorithm>
 #include <iostream>
+#include "bldg.h"
 using namespace cv;
 using namespace std;
 
@@ -57,6 +58,115 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
         cv::imshow("Original Map", newMap);
     }
 }
+
+/* Define similar IsNorthOf, IsSouthOf, IsEastOf, IsWestOf, IsNearOf for points. i.e. Point.IsNorthOf(bldg);
+/* Calculate if this_building is North of target_building */
+bool IsNorthOf (Point src, Bldg tgt) {
+    // y-coordinate of tgt is greater than y-coordinate of src: true
+    if (tgt.GetCenter().y > src.y) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool IsSouthOf (Point src, Bldg tgt) {
+    // y-coordinate of tgt is less than y-coordinate of src: true
+    if (tgt.GetCenter().y < src.y) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool IsEastOf (Point src, Bldg tgt) {
+    // x-coordinate of tgt is greater than x-coordinate of src: true
+    if (tgt.GetCenter().x > src.x) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool IsWestOf (Point src, Bldg tgt) {
+    // x-coordinate of tgt is less than x-coordinate of src: true
+    if (tgt.GetCenter().x < src.x) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool IsNear (Point src, Bldg tgt) {
+    // tgt building overlaps the expanded minimum-bounding rectangle of src: true
+    int expand_distance = 34;
+    int x_start = 0;
+    int x_end = 275;
+    int y_start = 0;
+    int y_end = 495;
+    
+    // Set expanded bounding rectangle of point; checking for boundary conditions.
+    if (src.x > expand_distance) {
+        x_start = src.x - expand_distance;
+    }
+    
+    if (src.x + expand_distance < 275) {
+        x_end = src.x + expand_distance;
+    }
+    
+    if (src.y > expand_distance) {
+        y_start = src.y - expand_distance;
+    }
+    
+    if (src.y + expand_distance < 495) {
+        y_end = src.y + expand_distance;
+    }
+    
+//    cout << "x_start: " << x_start;
+//    cout << " x_end: " << x_end;
+//    cout << " y_start: " << y_start;
+//    cout << " y_end: " << y_end << endl;
+    
+    Mat tempMap = tgt.GetMap();
+    int tgtNum = tgt.GetBldgno();
+    
+//    cout << "START THE EXTENDED BOUNDING RECTANGLE HERE" << endl;
+    for (int i = y_start; i < y_end; i++) {
+        for (int j = x_start ; j < x_end; j++) {
+//            cout << (int)tempMap.at<bool>(i,j) << " ";
+            if ((int)tempMap.at<bool>(i,j) == tgtNum) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
+
+//  Generate EquivClass vector for a point.
+// 1. Find the closest building to the point using Euclidean distance.
+// 2. Calculate the boolean vector: where
+// 		[0] = closest building's number,
+// 		[1] = IsNorthOf(closest building's number)
+// 		[2] = IsSouthOf(closest building's number)
+// 		[3] = IsEastOf(closest building's number)
+// 		[4] = IsWestOf(closest building's number)
+// 		[5] = IsNear(closest building's number)
+
+vector<bool> CalcEquivClass (Point src, int closeBldg) {
+    
+};
+
+// Generates a vector<Points> that is the EquivClassSet. 
+// 1. For each black pixel in map. 
+// 		:Generate the EquivClass vector relative to the given building. 
+// 		:Compare that to EquivClass vector of src. If ==, add to result.
+vector<Points> CalcEquivClassSet (Point src, int closeBldg) {
+	vector<bool> srcEquivClass = CalcEquivClass(src, closeBldg);
+};
+
+//  Finally, mouseEvent takes a vector<Points> and changes color on map for each.
+
 
 
 
