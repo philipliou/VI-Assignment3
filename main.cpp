@@ -45,18 +45,20 @@ int main(int argc, const char * argv[])
 //    CalcEquivClass(Point_<int> (275, 495), &BldgList);
 //    printPointDesc(Point_<int> (124, 372), &BldgList);
 
-    CalcEquivClassSet(Point_<int> (1, 1), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (1, 1), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (135, 221), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (0, 243), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (274, 243), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (140, 1), &BldgList, &map_bw);
-//    CalcEquivClassSet(Point_<int> (140, 495), &BldgList, &map_bw);
-//    CalcEquivClassSet(Point_<int> (275, 495), &BldgList, &map_bw);    
+//    CalcEquivClassSet(Point_<int> (495, 140), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (495, 275), &BldgList, &map_bw);
+//    CalcEquivClassSet(Point_<int> (159, 370), &BldgList, &map_bw);
+
     
-//   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
-//   cv::imshow("Original Map", map);
-//   cvSetMouseCallback("Original Map", mouseEvent, &map);
-//   cv::waitKey();
+   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
+   cv::imshow("Original Map", map);
+   cvSetMouseCallback("Original Map", mouseEvent, &BldgList);
+   cv::waitKey();
     
 /**** Code that might be useful ****/
 //   cout << "M = "<< endl << " "  << map_labeled << endl << endl;

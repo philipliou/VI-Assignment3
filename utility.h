@@ -41,24 +41,6 @@ vector<Bldg> InitializeMap () {
     return BldgList;
 };
 
-void mouseEvent(int evt, int x, int y, int flags, void* param){
-    if(evt==CV_EVENT_LBUTTONDOWN){
-        Mat* map = (Mat*) param;
-        Mat newMap = *map;
-       cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
-        for (int start_x = x - 10; start_x < x + 10; start_x++) {
-            for (int start_y = y - 10; start_y < y + 10; start_y++) {
-                newMap.at<Vec3b>(start_y, start_x)[0] = 0;
-                newMap.at<Vec3b>(start_y, start_x)[1] = 255;
-                newMap.at<Vec3b>(start_y, start_x)[2] = 0;
-            }
-        }
-        
-//        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
-        cv::imshow("Original Map", newMap);
-    }
-}
-
 /* Define similar IsNorthOf, IsSouthOf, IsEastOf, IsWestOf, IsNearOf for points. i.e. Point.IsNorthOf(bldg);
 /* Calculate if this_building is North of target_building */
 bool IsNorthOf (Point src, Bldg *tgt) {
@@ -233,7 +215,7 @@ vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map_bw)
 	for (int i = 0; i < map_bw->rows; i++) {
 		for (int j = 0; j < map_bw->cols; j++) {
 			if (map_bw->at<bool>(i,j) == 0) {
-				tempPt = Point_<int> (i,j);
+				tempPt = Point_<int> (j,i);
 				vector<int> tempEquivClass = CalcEquivClass(tempPt, BldgList);
 				if (tempEquivClass == srcEquivClass) {
 					EquivClassSet.push_back(tempPt);
@@ -242,16 +224,66 @@ vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map_bw)
 		}
 	}
     
-    cout << "These are the points that are in the EquivClassSet for point: " << src << endl;
-    for(vector<Point>::iterator it = EquivClassSet.begin(); it != EquivClassSet.end(); ++it) {
-        cout << *it << endl;
-    }
+//  cout << "These are the points that are in the EquivClassSet for point: " << src << endl;
+//  for(vector<Point>::iterator it = EquivClassSet.begin(); it != EquivClassSet.end(); ++it) {
+//      cout << *it << endl;
+//  }
 
 	return EquivClassSet;
 };
 
 //  Finally, mouseEvent takes a vector<Points> and changes color on map for each
+void mouseEventOriginal(int evt, int x, int y, int flags, void* param){
+    if(evt==CV_EVENT_LBUTTONDOWN){
+        Mat* map = (Mat*) param;
+        Mat newMap = *map;
+       cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
+        for (int start_x = x - 10; start_x < x + 10; start_x++) {
+            for (int start_y = y - 10; start_y < y + 10; start_y++) {
+                newMap.at<Vec3b>(start_y, start_x)[0] = 0;
+                newMap.at<Vec3b>(start_y, start_x)[1] = 255;
+                newMap.at<Vec3b>(start_y, start_x)[2] = 0;
+            }
+        }
+        
+//        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
+        cv::imshow("Original Map", newMap);
+    }
+}
 
+void mouseEvent(int evt, int x, int y, int flags, void* param){
+
+    // Map_bw that persists throughtout the program
+    static cv::Mat map_bw = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 0);
+    static const cv::Mat map_color = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
+    
+    // Get the building list that is passed. Used for CalcEquivClassSet call.
+    vector<Bldg>* BldgList = (vector<Bldg>*) param;
+    
+    // Create point that user clicked.
+    Point clickedPt = Point_<int>(x, y);
+
+    // Get the point that you want to color.
+    vector<Point> PointsToColor = CalcEquivClassSet (clickedPt, BldgList, &map_bw);
+    
+    if(evt==CV_EVENT_LBUTTONDOWN){
+
+    	cout << "Point clicked: " << clickedPt << endl;
+    	printPointDesc(clickedPt, BldgList);
+        Mat tempMap = map_color.clone();
+
+        // Color the map green for every point that is in the equivalence class.
+        for(vector<Point>::iterator it = PointsToColor.begin(); it != PointsToColor.end(); ++it) {
+       	// cout << it->y << " " << it->x << " " << endl;     
+
+            tempMap.at<Vec3b>(it->y, it->x)[0] = 0;
+            tempMap.at<Vec3b>(it->y, it->x)[1] = 255;
+            tempMap.at<Vec3b>(it->y, it->x)[2] = 0;
+        }
+       
+        cv::imshow("Original Map", tempMap);
+    }
+}
 
 
 #endif
