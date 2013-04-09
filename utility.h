@@ -202,23 +202,23 @@ void printPointDesc(Point src, vector<Bldg> *BldgList) {
    cout << src << " is" ;
 
    if (holder.at(1)) {
-   	cout << " north of (called " << BldgList->at(closeBldg).GetName() << " )";
+   	cout << " north of (called " << BldgList->at(closeBldg).GetName() << ")";
    }
 
    if (holder.at(2)) {
-   	cout << " south of (called " << BldgList->at(closeBldg).GetName() << " )";
+   	cout << " south of (called " << BldgList->at(closeBldg).GetName() << ")";
    }
 
    if (holder.at(3)) {
-   	cout << " east of (called " << BldgList->at(closeBldg).GetName() << " )";
+   	cout << " east of (called " << BldgList->at(closeBldg).GetName() << ")";
    }
 
    if (holder.at(4)) {
-   	cout << " west of (called " << BldgList->at(closeBldg).GetName() << " )";
+   	cout << " west of (called " << BldgList->at(closeBldg).GetName() << ")";
    }
 
    if (holder.at(5)) {
-   	cout << " near of (called " << BldgList->at(closeBldg).GetName() << " )";
+   	cout << " near (called " << BldgList->at(closeBldg).GetName() << " )";
    }
 
    cout << endl;
@@ -283,38 +283,48 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
     static cv::Mat map_bw = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 0);
     static cv::Mat map_color = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
     static cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0);
+
+    static cv::Mat SetTestMap = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
+
+    Mat tempMap;
+
+    // Track how many times clicked.
+    static int clickNum = 0;
     
     // Get the building list that is passed. Used for CalcEquivClassSet call.
     vector<Bldg>* BldgList = (vector<Bldg>*) param;
     
-    // Create point that user clicked.
     Point clickedPt = Point_<int>(x, y);
-
-    // Get the points that you want to color.
     vector<Point> PointsToColor = CalcEquivClassSet (clickedPt, BldgList, &map_color);
-    cout << "size of equivalence set: " << PointsToColor.size() << endl;
+    // cout << "size of equivalence set: " << PointsToColor.size() << endl;
     
     if(evt==CV_EVENT_LBUTTONDOWN){
+    	clickNum++; // Increment click counter. 
+    	// cout << "Point clicked: " << clickedPt << endl;
 
-    	cout << "Point clicked: " << clickedPt << endl;
-    	printPointDesc(clickedPt, BldgList);
-        Mat tempMap = map_color.clone();
+        // Mat tempMap = map_color.clone();
+    	tempMap = SetTestMap;
 
-        // Color the map green for every point that is in the equivalence class.
-
-        int ptsColored = 0;
-        for(vector<Point>::iterator it = PointsToColor.begin(); it != PointsToColor.end(); ++it) {
-        	ptsColored++;
-       	// cout << it->y << " " << it->x << " " << endl;     
-
+        // Src (first click) is green.
+    	if (clickNum == 1) {
+    		for(vector<Point>::iterator it = PointsToColor.begin(); it != PointsToColor.end(); ++it) {
             tempMap.at<Vec3b>(it->y, it->x)[0] = 0;
             tempMap.at<Vec3b>(it->y, it->x)[1] = 255;
             tempMap.at<Vec3b>(it->y, it->x)[2] = 0;
-        }
+        	}
+        	cout << "Source: "; printPointDesc(clickedPt, BldgList);
+    	} 
 
-        cout << "Color of pt clicked: " << tempMap.at<Vec3b>(clickedPt.y, clickedPt.x) << endl;
-
-        cout << "Pts colored: " << ptsColored << endl;
+    	// Goal (second click) is red.
+    	if (clickNum == 2) {
+    		for(vector<Point>::iterator it = PointsToColor.begin(); it != PointsToColor.end(); ++it) {
+            tempMap.at<Vec3b>(it->y, it->x)[0] = 0;
+            tempMap.at<Vec3b>(it->y, it->x)[1] = 0;
+            tempMap.at<Vec3b>(it->y, it->x)[2] = 255;
+        	}
+        	cout << "Goal: "; printPointDesc(clickedPt, BldgList);
+    	}
+        
        
         cv::imshow("Original Map", tempMap);
     }

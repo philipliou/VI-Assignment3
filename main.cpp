@@ -24,7 +24,7 @@ int main(int argc, const char * argv[])
 //    for (int i = 0; i < 27; i++) {
 //        BldgList.at(i).printBldg();
 //    }
-    
+
    cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
    cv::imshow("Original Map", map);
    cvSetMouseCallback("Original Map", mouseEvent, &BldgList);
