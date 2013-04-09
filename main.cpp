@@ -27,7 +27,7 @@ int main(int argc, const char * argv[])
 
 //    vector<bool> CalcEquivClass (Point src, vector<Bldg> *BldgList);
     
-    Point testPt = cv::Point_<int> (135, 221);
+//    Point testPt = cv::Point_<int> (135, 221);
     
 //    cout << IsNorthOf(testPt, &(BldgList.at(11)));
 //    cout << IsSouthOf(testPt, &(BldgList.at(11)));
@@ -35,14 +35,13 @@ int main(int argc, const char * argv[])
 //    cout << IsWestOf(testPt, &(BldgList.at(11)));
 //    cout << IsNear(testPt, &(BldgList.at(11)));
     
-    
 //    CalcEquivClass(Point_<int> (1, 1), &BldgList);
 //    CalcEquivClass(Point_<int> (135, 221), &BldgList);
 //    CalcEquivClass(Point_<int> (0, 243), &BldgList);
 //    CalcEquivClass(Point_<int> (274, 243), &BldgList);
 //    CalcEquivClass(Point_<int> (140, 1), &BldgList);
 //    CalcEquivClass(Point_<int> (140, 495), &BldgList);
-//    CalcEquivClass(Point_<int> (275, 495), &BldgList);
+//    CalcEquivClass(Point_<int> (154, 441), &BldgList);
 //    printPointDesc(Point_<int> (124, 372), &BldgList);
 
 //    CalcEquivClassSet(Point_<int> (1, 1), &BldgList, &map_bw);
@@ -52,8 +51,7 @@ int main(int argc, const char * argv[])
 //    CalcEquivClassSet(Point_<int> (140, 1), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (495, 140), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (495, 275), &BldgList, &map_bw);
-//    CalcEquivClassSet(Point_<int> (159, 370), &BldgList, &map_bw);
-
+//    CalcEquivClassSet(Point_<int> (154, 441), &BldgList, &map_bw);
     
    cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
    cv::imshow("Original Map", map);

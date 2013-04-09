@@ -153,14 +153,27 @@ vector<int> CalcEquivClass (Point src, vector<Bldg> *BldgList) {
     	}
     }
 
-    // cout << src << " is closest to building # " << closeBldg + 1 << "with distance: " << minDistance << endl;
+    // Check if the point is actually in the building
+    // THIS PART IS NOT GETTING EXECUTED!!!
 
-    equivclass.push_back(closeBldg);
-    equivclass.push_back(IsNorthOf(src, &BldgList->at(closeBldg)));
-	equivclass.push_back(IsSouthOf(src, &BldgList->at(closeBldg)));
-	equivclass.push_back(IsEastOf(src, &BldgList->at(closeBldg)));
-	equivclass.push_back(IsWestOf(src, &BldgList->at(closeBldg)));
-	equivclass.push_back(IsNear(src, &BldgList->at(closeBldg)));
+    if ((BldgList->at(closeBldg).GetMap()).at<bool>(src.y, src.x) != 0) {
+    	equivclass.push_back(closeBldg);
+    	equivclass.push_back(0);
+    	equivclass.push_back(0);
+    	equivclass.push_back(0);
+    	equivclass.push_back(0);
+    	equivclass.push_back(1);
+        
+    } else {
+    	equivclass.push_back(closeBldg);
+	    equivclass.push_back(IsNorthOf(src, &BldgList->at(closeBldg)));
+		equivclass.push_back(IsSouthOf(src, &BldgList->at(closeBldg)));
+		equivclass.push_back(IsEastOf(src, &BldgList->at(closeBldg)));
+		equivclass.push_back(IsWestOf(src, &BldgList->at(closeBldg)));
+		equivclass.push_back(IsNear(src, &BldgList->at(closeBldg)));
+    }
+
+    // cout << src << " is closest to building # " << closeBldg + 1 << "with distance: " << minDistance << endl;
 
  //   cout << src << " is close to " << closeBldg << " : " ;
 	// for(int i = 1; i < 6; i++) {
@@ -206,15 +219,16 @@ void printPointDesc(Point src, vector<Bldg> *BldgList) {
 // 		:Generate the EquivClass vector relative to the given building. 
 // 		:Compare that to EquivClass vector of src. If ==, add to result.
 
-vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map_bw) {
+vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map) {
+	// *map is a labeled map
 	vector<Point> EquivClassSet;
 	vector<int> srcEquivClass = CalcEquivClass(src, BldgList);
 
 	Point_<int> tempPt;
 
-	for (int i = 0; i < map_bw->rows; i++) {
-		for (int j = 0; j < map_bw->cols; j++) {
-//			if (map_bw->at<bool>(i,j) == 0) {
+	for (int i = 0; i < map->rows; i++) {
+		for (int j = 0; j < map->cols; j++) {
+			// if (map->at<bool>(i,j) == 0) {
 			if (true) {
                 tempPt = Point_<int> (j,i);
 				vector<int> tempEquivClass = CalcEquivClass(tempPt, BldgList);
@@ -225,10 +239,10 @@ vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map_bw)
 		}
 	}
     
-//  cout << "These are the points that are in the EquivClassSet for point: " << src << endl;
-//  for(vector<Point>::iterator it = EquivClassSet.begin(); it != EquivClassSet.end(); ++it) {
-//      cout << *it << endl;
-//  }
+ // cout << "These are the points that are in the EquivClassSet for point: " << src << endl;
+ // for(vector<Point>::iterator it = EquivClassSet.begin(); it != EquivClassSet.end(); ++it) {
+ //     cout << *it << endl;
+ // }
 
 	return EquivClassSet;
 };
@@ -256,7 +270,8 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
 
     // Map_bw that persists throughtout the program
     static cv::Mat map_bw = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 0);
-    static const cv::Mat map_color = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
+    static cv::Mat map_color = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm", 1);
+    static cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0);
     
     // Get the building list that is passed. Used for CalcEquivClassSet call.
     vector<Bldg>* BldgList = (vector<Bldg>*) param;
@@ -265,7 +280,7 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
     Point clickedPt = Point_<int>(x, y);
 
     // Get the points that you want to color.
-    vector<Point> PointsToColor = CalcEquivClassSet (clickedPt, BldgList, &map_bw);
+    vector<Point> PointsToColor = CalcEquivClassSet (clickedPt, BldgList, &map_color);
     cout << "size of equivalence set: " << PointsToColor.size() << endl;
     
     if(evt==CV_EVENT_LBUTTONDOWN){
@@ -275,13 +290,20 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
         Mat tempMap = map_color.clone();
 
         // Color the map green for every point that is in the equivalence class.
+
+        int ptsColored = 0;
         for(vector<Point>::iterator it = PointsToColor.begin(); it != PointsToColor.end(); ++it) {
+        	ptsColored++;
        	// cout << it->y << " " << it->x << " " << endl;     
 
             tempMap.at<Vec3b>(it->y, it->x)[0] = 0;
-            tempMap.at<Vec3b>(it->y, it->x)[1] = 255;
-            tempMap.at<Vec3b>(it->y, it->x)[2] = 0;
+            tempMap.at<Vec3b>(it->y, it->x)[1] = 0;
+            tempMap.at<Vec3b>(it->y, it->x)[2] = 255;
         }
+
+        cout << "Color of pt clicked: " << tempMap.at<Vec3b>(clickedPt.y, clickedPt.x) << endl;
+
+        cout << "Pts colored: " << ptsColored << endl;
        
         cv::imshow("Original Map", tempMap);
     }
