@@ -21,15 +21,22 @@ int main(int argc, const char * argv[])
     vector<Bldg> BldgList;
     BldgList = InitializeMap();
 
-    // Iterate through every pixel in the Mat, calculate the equivalence class set. 
+//    for (int i = 0; i < 27; i++) {
+//        BldgList.at(i).printBldg();
+//    }
     
-    int minClassSize = 495*275;
-    int maxClassSize = 0;
-    Point minPt;
-    Point maxPt;
-    Point temp;
-    int tempVecSize = 0;
-
+   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
+   cv::imshow("Original Map", map);
+   cvSetMouseCallback("Original Map", mouseEvent, &BldgList);
+   cv::waitKey();
+    
+/**** Code that might be useful ****/
+//    int minClassSize = 495*275;
+//    int maxClassSize = 0;
+//    Point minPt;
+//    Point maxPt;
+//    Point temp;
+//    int tempVecSize = 0;
 //    for (int i = 0; i < map.rows; i++) {
 //        for (int j = 0; j < map.cols; j++) {
 //            temp = Point(i, j);
@@ -84,13 +91,9 @@ int main(int argc, const char * argv[])
 //    CalcEquivClassSet(Point_<int> (495, 140), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (495, 275), &BldgList, &map_bw);
 //    CalcEquivClassSet(Point_<int> (154, 441), &BldgList, &map_bw);
-    
-   cv::namedWindow("Original Map", cv::WINDOW_AUTOSIZE);
-   cv::imshow("Original Map", map);
-   cvSetMouseCallback("Original Map", mouseEvent, &BldgList);
-   cv::waitKey();
-    
-/**** Code that might be useful ****/
+
+
+   
 //   cout << "M = "<< endl << " "  << map_labeled << endl << endl;
     
 //    for (int i = 0; i < tempMap.cols; i++) {
