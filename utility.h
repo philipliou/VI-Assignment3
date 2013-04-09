@@ -23,7 +23,7 @@ using namespace std;
 
 vector<Bldg> InitializeMap () {
 	cv::Mat map = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-campus.pgm");
-    cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0        );
+    cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0);
     ifstream labels ("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-table-changed.txt", ifstream::in);
 	vector<Bldg> BldgList;
 	for (int i = 0; i < 27; i++) {
@@ -141,22 +141,25 @@ double euclideanDist(Point p, Point q) {
 };
 
 vector<int> CalcEquivClass (Point src, vector<Bldg> *BldgList) {
-    int closeBldg = 0; 
+    
+    static const cv::Mat map_labeled = cv::imread("/Users/Philip/Google Drive/Spring 2013/Visual Interfaces/Assignment 3/ass3-labeled.pgm", 0);
+    
+    int closeBldg = 0;
     double minDistance = euclideanDist(src, BldgList->at(0).GetCenter());
     vector<int> equivclass;
 
-    for (int i = 0; i < 27; i++ ) {
-    		// cout << "Euclidean distance: " << euclideanDist(src, BldgList->at(i).GetCenter()) << endl;
-    	if (euclideanDist(src, BldgList->at(i).GetCenter()) < minDistance) {
-    		closeBldg = i;
-    		minDistance = euclideanDist(src, BldgList->at(i).GetCenter());
-    	}
-    }
-
-    // Check if the point is actually in the building
-    // THIS PART IS NOT GETTING EXECUTED!!!
-
-    if ((BldgList->at(closeBldg).GetMap()).at<bool>(src.y, src.x) != 0) {
+//    for (int i = 0; i < 27; i++ ) {
+//        // cout << "Euclidean distance: " << euclideanDist(src, BldgList->at(i).GetCenter()) << endl;
+//    	if (euclideanDist(src, BldgList->at(i).GetCenter()) < minDistance) {
+//    		closeBldg = i;
+//    		minDistance = euclideanDist(src, BldgList->at(i).GetCenter());
+//    	}
+//    }
+    
+    // Check if the point is actually in the building, if it is, then same equivalence class as points in the building.
+    
+    if (map_labeled.at<bool>(src.y, src.x) != 0) {
+        closeBldg = map_labeled.at<bool>(src.y, src.x) - 1;
     	equivclass.push_back(closeBldg);
     	equivclass.push_back(0);
     	equivclass.push_back(0);
@@ -165,6 +168,14 @@ vector<int> CalcEquivClass (Point src, vector<Bldg> *BldgList) {
     	equivclass.push_back(1);
         
     } else {
+        for (int i = 0; i < 27; i++ ) {
+            // cout << "Euclidean distance: " << euclideanDist(src, BldgList->at(i).GetCenter()) << endl;
+            if (euclideanDist(src, BldgList->at(i).GetCenter()) < minDistance) {
+                closeBldg = i;
+                minDistance = euclideanDist(src, BldgList->at(i).GetCenter());
+            }
+        }
+    // Otherwise, find closest building to determine equivalence class.
     	equivclass.push_back(closeBldg);
 	    equivclass.push_back(IsNorthOf(src, &BldgList->at(closeBldg)));
 		equivclass.push_back(IsSouthOf(src, &BldgList->at(closeBldg)));
@@ -220,7 +231,7 @@ void printPointDesc(Point src, vector<Bldg> *BldgList) {
 // 		:Compare that to EquivClass vector of src. If ==, add to result.
 
 vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map) {
-	// *map is a labeled map
+	// *map is a color_map
 	vector<Point> EquivClassSet;
 	vector<int> srcEquivClass = CalcEquivClass(src, BldgList);
 
@@ -255,8 +266,8 @@ void mouseEventOriginal(int evt, int x, int y, int flags, void* param){
        cout << x << " " << y << " " << newMap.at<Vec3b>(y, x) << endl;
         for (int start_x = x - 10; start_x < x + 10; start_x++) {
             for (int start_y = y - 10; start_y < y + 10; start_y++) {
-                newMap.at<Vec3b>(start_y, start_x)[0] = 0;
-                newMap.at<Vec3b>(start_y, start_x)[1] = 255;
+                newMap.at<Vec3b>(start_y, start_x)[0] = 255;
+                newMap.at<Vec3b>(start_y, start_x)[1] = 0;
                 newMap.at<Vec3b>(start_y, start_x)[2] = 0;
             }
         }
@@ -297,8 +308,8 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
        	// cout << it->y << " " << it->x << " " << endl;     
 
             tempMap.at<Vec3b>(it->y, it->x)[0] = 0;
-            tempMap.at<Vec3b>(it->y, it->x)[1] = 0;
-            tempMap.at<Vec3b>(it->y, it->x)[2] = 255;
+            tempMap.at<Vec3b>(it->y, it->x)[1] = 255;
+            tempMap.at<Vec3b>(it->y, it->x)[2] = 0;
         }
 
         cout << "Color of pt clicked: " << tempMap.at<Vec3b>(clickedPt.y, clickedPt.x) << endl;

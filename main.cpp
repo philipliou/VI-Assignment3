@@ -20,7 +20,39 @@ int main(int argc, const char * argv[])
     
     vector<Bldg> BldgList;
     BldgList = InitializeMap();
+
+    // Iterate through every pixel in the Mat, calculate the equivalence class set. 
     
+    int minClassSize = 495*275;
+    int maxClassSize = 0;
+    Point minPt;
+    Point maxPt;
+    Point temp;
+    int tempVecSize = 0;
+
+//    for (int i = 0; i < map.rows; i++) {
+//        for (int j = 0; j < map.cols; j++) {
+//            temp = Point(i, j);
+////            cout << temp << endl;
+//            tempVecSize = (CalcEquivClassSet(temp, &BldgList, &map)).size();
+////            cout << tempVecSize << endl;
+//            if (tempVecSize > maxClassSize) {
+//                maxClassSize = tempVecSize;
+//                maxPt = temp;
+//                cout << maxClassSize << endl;
+//            };
+//
+//            if (tempVecSize < minClassSize) {
+//                minClassSize = tempVecSize;
+//                minPt = temp;
+//                cout << minClassSize << endl;
+//            }
+//        }
+//    };
+//
+//    cout << "minClassSize: " << minClassSize << ", Point " << minPt << endl;
+//    cout << "maxClassSize: " << maxClassSize << ", Point " << maxPt << endl;
+
 //    BldgList.at(0).printBldg();
 //    BldgList.at(0).CalcSpaceRel(BldgList);
 //    BldgList.at(0).printSpaceRel();
