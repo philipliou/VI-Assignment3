@@ -167,7 +167,7 @@ vector<int> CalcEquivClass (Point src, vector<Bldg> *BldgList) {
  //   	cout << equivclass.at(i);
  //   }
  //   cout << endl;
-
+    
     return equivclass;
 };
 
@@ -214,8 +214,9 @@ vector<Point> CalcEquivClassSet (Point src, vector<Bldg> *BldgList, Mat *map_bw)
 
 	for (int i = 0; i < map_bw->rows; i++) {
 		for (int j = 0; j < map_bw->cols; j++) {
-			if (map_bw->at<bool>(i,j) == 0) {
-				tempPt = Point_<int> (j,i);
+//			if (map_bw->at<bool>(i,j) == 0) {
+			if (true) {
+                tempPt = Point_<int> (j,i);
 				vector<int> tempEquivClass = CalcEquivClass(tempPt, BldgList);
 				if (tempEquivClass == srcEquivClass) {
 					EquivClassSet.push_back(tempPt);
@@ -263,8 +264,9 @@ void mouseEvent(int evt, int x, int y, int flags, void* param){
     // Create point that user clicked.
     Point clickedPt = Point_<int>(x, y);
 
-    // Get the point that you want to color.
+    // Get the points that you want to color.
     vector<Point> PointsToColor = CalcEquivClassSet (clickedPt, BldgList, &map_bw);
+    cout << "size of equivalence set: " << PointsToColor.size() << endl;
     
     if(evt==CV_EVENT_LBUTTONDOWN){
 
